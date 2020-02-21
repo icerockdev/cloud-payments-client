@@ -15,6 +15,21 @@ class PaymentException extends BaseException
     protected $reasonCode;
 
     /**
+     * @var integer
+     */
+    protected $transactionId;
+
+    /**
+     * @var string
+     */
+    protected $invoiceId;
+
+    /**
+     * @var float
+     */
+    protected $amount;
+
+    /**
      * @var string
      */
     protected $cardHolderMessage;
@@ -29,6 +44,9 @@ class PaymentException extends BaseException
             if(isset($response['Model']['Reason'])) $this->reason = $response['Model']['Reason'];
             if(isset($response['Model']['ReasonCode'])) $this->reasonCode = $response['Model']['ReasonCode'];
             if(isset($response['Model']['CardHolderMessage'])) $this->cardHolderMessage = $response['Model']['CardHolderMessage'];
+            if(isset($response['Model']['TransactionId'])) $this->transactionId = $response['Model']['TransactionId'];
+            if(isset($response['Model']['Amount'])) $this->amount = $response['Model']['Amount'];
+            if(isset($response['Model']['InvoiceId'])) $this->invoiceId = $response['Model']['InvoiceId'];
         }
 
         parent::__construct($this->reason);
@@ -57,4 +75,30 @@ class PaymentException extends BaseException
     {
         return $this->cardHolderMessage;
     }
+
+    /**
+     * @return int
+     */
+    public function getTransactionId()
+    {
+        return $this->transactionId;
+    }
+
+    /**
+     * @return string
+     */
+    public function getInvoiceId()
+    {
+        return $this->invoiceId;
+    }
+
+    /**
+     * @return float
+     */
+    public function getAmount()
+    {
+        return $this->amount;
+    }
+
+
 }
