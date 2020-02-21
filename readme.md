@@ -5,7 +5,7 @@
 
 ## Установка
 ```bash
-composer require troytft/cloud-payments-client
+composer require icerockdev/cloud-payments-client
 ```
 
 ## Использование
