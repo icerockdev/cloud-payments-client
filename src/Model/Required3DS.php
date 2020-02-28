@@ -2,6 +2,10 @@
 
 namespace CloudPayments\Model;
 
+/**
+ * Class Required3DS
+ * @package CloudPayments\Model
+ */
 class Required3DS
 {
     /**
