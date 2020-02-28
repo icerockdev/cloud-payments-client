@@ -2,6 +2,12 @@
 
 namespace CloudPayments;
 
+use CloudPayments\Exception\BaseException;
+
+/**
+ * Class Manager
+ * @package CloudPayments
+ */
 class Manager
 {
     /**
@@ -39,6 +45,7 @@ class Manager
      * @param array $params
      * @param array $headers
      * @return array
+     * @throws BaseException
      */
     protected function sendRequest($endpoint, array $params = [], array $headers = [])
     {
@@ -58,9 +65,13 @@ class Manager
 
         $result = curl_exec($curl);
 
+        if ($result === false) {
+            throw new BaseException(curl_error($curl));
+        }
+
         curl_close($curl);
 
-        return (array) json_decode($result, true);
+        return (array)json_decode($result, true);
     }
 
     /**
@@ -80,6 +91,7 @@ class Manager
     }
 
     /**
+     * @throws BaseException
      * @throws Exception\RequestException
      */
     public function test()
@@ -101,9 +113,17 @@ class Manager
      * @return Model\Required3DS|Model\Transaction
      * @throws Exception\PaymentException
      * @throws Exception\RequestException
+     * @throws BaseException
      */
-    public function chargeCard($amount, $currency, $ipAddress, $cardHolderName, $cryptogram, $params = [], $requireConfirmation = false)
-    {
+    public function chargeCard(
+        $amount,
+        $currency,
+        $ipAddress,
+        $cardHolderName,
+        $cryptogram,
+        $params = [],
+        $requireConfirmation = false
+    ) {
         $endpoint = $requireConfirmation ? '/payments/cards/auth' : '/payments/cards/charge';
         $defaultParams = [
             'Amount' => $amount,
@@ -138,6 +158,7 @@ class Manager
      * @param array $params
      * @param bool $requireConfirmation
      * @return Model\Required3DS|Model\Transaction
+     * @throws BaseException
      * @throws Exception\PaymentException
      * @throws Exception\RequestException
      */
@@ -172,6 +193,7 @@ class Manager
      * @param $transactionId
      * @param $token
      * @return Model\Transaction
+     * @throws BaseException
      * @throws Exception\PaymentException
      * @throws Exception\RequestException
      */
@@ -196,6 +218,7 @@ class Manager
     /**
      * @param $transactionId
      * @param $amount
+     * @throws BaseException
      * @throws Exception\RequestException
      */
     public function confirmPayment($transactionId, $amount)
@@ -212,6 +235,7 @@ class Manager
 
     /**
      * @param $transactionId
+     * @throws BaseException
      * @throws Exception\RequestException
      */
     public function voidPayment($transactionId)
@@ -228,6 +252,7 @@ class Manager
     /**
      * @param $transactionId
      * @param $amount
+     * @throws BaseException
      * @throws Exception\RequestException
      */
     public function refundPayment($transactionId, $amount)
@@ -245,6 +270,7 @@ class Manager
     /**
      * @param $invoiceId
      * @return Model\Transaction
+     * @throws BaseException
      * @throws Exception\RequestException
      */
     public function findPayment($invoiceId)
@@ -261,9 +287,10 @@ class Manager
     }
 
     /**
-     * @param $date
-     * @param $timezone
+     * @param string $date
+     * @param string $timezone
      * @return Model\Transaction
+     * @throws BaseException
      * @throws Exception\RequestException
      */
     public function listPayment($date = '', $timezone = '')
@@ -286,8 +313,10 @@ class Manager
 
     /**
      * @param $data
-     * @param $idempotent_id
-     * @throws RequestException
+     * @param null $requestId
+     * @return array
+     * @throws BaseException
+     * @throws Exception\RequestException
      */
     public function receipt($data, $requestId = null)
     {

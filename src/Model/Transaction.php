@@ -2,6 +2,10 @@
 
 namespace CloudPayments\Model;
 
+/**
+ * Class Transaction
+ * @package CloudPayments\Model
+ */
 class Transaction
 {
     /**
@@ -888,7 +892,7 @@ class Transaction
         if (isset($params['InvoiceId'])) {
             $transaction->setInvoiceId($params['InvoiceId']);
         }
-        
+
         if (isset($params['AccountId'])) {
             $transaction->setAccountId($params['AccountId']);
         }
